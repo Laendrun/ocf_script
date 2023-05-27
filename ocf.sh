@@ -11,39 +11,58 @@ do
 	cpp="$cppPath${class^}".cpp
 	# HPP
 	rm -f $hpp && touch $hpp
-	printf "#ifndef ${class^^}_HPP\n# define ${class^^}_HPP\n" >> $hpp
-	printf "# include <iostream>\n\n" >> $hpp
+	cat > $hpp << EOL
+#ifndef ${class^^}_HPP
+# define ${class^^}_HPP
+# include <iostream>
 
-	printf "class ${class^}\n{\n\tpublic:\n" >> $hpp
-	printf "\t\t${class^}(void);\n" >> $hpp
-	printf "\t\t${class^}(const ${class^}& other);\n" >> $hpp
-	printf "\t\t${class^} &operator=(const ${class^} &other);\n" >> $hpp
-	printf "\t\t~${class^}();\n};\n" >> $hpp
+class ${class^}
+{
+	public:
+		${class^}(void);
+		${class^}(const ${class^}& other);
+		${class^} &operator=(const ${class^} &other);
+		~${class^}();
+};
 
-	printf "\n#endif // ifndef ${class^^}_HPP\n" >> $hpp
+#endif
+
+EOL
 
 	# CPP
 	rm -f $cpp && touch $cpp
-	printf "#include \"${class^}.hpp\"\n" >> $cpp
-	printf "\n// Default constructor\n" >> $cpp
-	printf "${class^}::${class^}(void)\n{\n" >> $cpp
-	printf "\tstd::cout << \"Default constructor called\" << std::endl;\n" >> $cpp
-	printf "\treturn ;\n}\n" >> $cpp
+	cat > $cpp << EOL
+#include "${class^}.hpp"
 
-	printf "\n// Copy constructor\n" >> $cpp
-	printf "${class^}::${class^}(const ${class^} &other)\n{\n" >> $cpp
-	printf "\tstd::cout << \"Copy constructor called\" << std::endl;\n" >> $cpp
-	printf "\treturn ;\n}\n" >> $cpp
+// Default constructor
+${class^}::${class^}(void)
+{
+	std::cout << "Default constructor called" << std::endl;
+	return ;
+}
 
-	printf "\n// Assignement operator overload\n" >> $cpp
-	printf "${class^} &${class^}::operator=(const ${class^} &other)\n{\n" >> $cpp
-	printf "\tstd::cout << \"Assignment operator called\" << std::endl;\n" >> $cpp
-	printf "\treturn (*this);\n}\n" >> $cpp
+// Copy constructor
+${class^}::${class^}(const ${class^} &other)
+{
+	std::cout << "Copy constructor called" << std::endl;
+	return ;
+}
 
-	printf "\n// Destructor\n" >> $cpp
-	printf "${class^}::~${class^}(void)\n{\n" >> $cpp
-	printf "\tstd::cout << \"Desctructor called\" << std::endl;\n" >> $cpp
-	printf "\treturn ;\n}\n" >> $cpp
+// Assignment operator overload
+${class^} &${class^}::operator=(const ${class^} &other)
+{
+	std::cout << "Assignment operator called" << std::endl;
+	return (*this);
+}
+
+// Destructor
+${class^}::~${class^}(void)
+{
+	std::cout << "Destructor called" << std::endl;
+	return ;
+}
+
+EOL
 done
 
 printf "\n$# classes created:\n\n"
