@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 hppPath="./"
 cppPath="./"
@@ -7,59 +7,63 @@ mkdir -p $hppPath $cppPath
 
 for class in "$@"
 do
-	hpp="$hppPath${class^}".hpp
-	cpp="$cppPath${class^}".cpp
-	# HPP
-	rm -f $hpp && touch $hpp
-	cat > $hpp << EOL
-#ifndef ${class^^}_HPP
-# define ${class^^}_HPP
+    capClass="$(tr '[:lower:]' '[:upper:]' <<< ${class:0:1})${class:1}"
+    fcapClass="$(tr '[:lower:]' '[:upper:]' <<< ${class})"
+    hpp="$hppPath$capClass".hpp
+    cpp="$cppPath$capClass".cpp
+    # HPP
+    rm -f $hpp && touch $hpp
+    cat > $hpp << EOL
+#ifndef ${fcapClass}_HPP
+# define ${fcapClass}_HPP
 # include <iostream>
 
-class ${class^}
+class $capClass
 {
-	public:
-		${class^}(void);
-		${class^}(const ${class^}& other);
-		${class^} &operator=(const ${class^} &other);
-		~${class^}();
+    public:
+        $capClass(void);
+        $capClass(const $capClass& other);
+        $capClass &operator=(const $capClass &other);
+        ~$capClass();
 };
 
 #endif
 
 EOL
 
-	# CPP
-	rm -f $cpp && touch $cpp
-	cat > $cpp << EOL
-#include "${class^}.hpp"
+    # CPP
+    rm -f $cpp && touch $cpp
+    cat > $cpp << EOL
+#include "$capClass.hpp"
 
 // Default constructor
-${class^}::${class^}(void)
+$capClass::$capClass(void)
 {
-	std::cout << "Default constructor called" << std::endl;
-	return ;
+    std::cout << "Default constructor called" << std::endl;
+    return ;
 }
 
 // Copy constructor
-${class^}::${class^}(const ${class^} &other)
+$capClass::$capClass(const $capClass &other)
 {
-	std::cout << "Copy constructor called" << std::endl;
-	return ;
+    std::cout << "Copy constructor called" << std::endl;
+    (void) other;
+    return ;
 }
 
 // Assignment operator overload
-${class^} &${class^}::operator=(const ${class^} &other)
+$capClass &$capClass::operator=(const $capClass &other)
 {
-	std::cout << "Assignment operator called" << std::endl;
-	return (*this);
+    std::cout << "Assignment operator called" << std::endl;
+    (void) other;
+    return (*this);
 }
 
 // Destructor
-${class^}::~${class^}(void)
+$capClass::~$capClass(void)
 {
-	std::cout << "Destructor called" << std::endl;
-	return ;
+    std::cout << "Destructor called" << std::endl;
+    return ;
 }
 
 EOL
@@ -68,6 +72,5 @@ done
 printf "\n$# classes created:\n\n"
 for class in "$@"
 do
-	echo "${class^}.hpp/.cpp"
+    echo "$capClass.hpp/.cpp"
 done
-echo "";
